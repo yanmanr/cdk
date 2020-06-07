@@ -8,7 +8,7 @@ ECS Stack: Sample code on how to create clusters (including auto-scaling), servi
 
 LoadBalancer Stack: Sample code on how to create load balancers and add their listeners, health checks while targets groups in place to forward traffic.
 
-EC2 Stack: Create Role for EC2 instance, configure userdata, run/create multiple EC2s in few lines of code.
+EC2 Stack: Create Role for EC2 instance, configure userdata, run/create multiple EC2s using loops.
 
 Lambda Stack: Sample code on how to deploy your lambda functions.
 
