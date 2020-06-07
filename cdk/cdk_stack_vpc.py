@@ -39,3 +39,13 @@ class InfraStack(core.Stack):
         self.vpc.add_interface_endpoint("ECSTelemetryEndpoint",service= ec2.InterfaceVpcEndpointAwsService.ECS_TELEMETRY)
 
         self.vpc.add_interface_endpoint("CloudFormationEndpoint", service= ec2.InterfaceVpcEndpointAwsService.CLOUDFORMATION)
+
+        # self.azs1 = core.Stack.availability_zones
+        # azcount = self.node.try_get_context(self.azs1)
+        # print(azcount)
+        self.azs = self.vpc.select_subnets(subnet_type = ec2.SubnetType.PRIVATE)
+
+#        num = 0
+#        for i in core.Fn.get_azs(region= 'ap-south-1'):
+#            ec2.PublicSubnet(self, "PublicSubnet" + str(num), availability_zone= str(i), cidr_block= "10.0." + str(num) + ".0/24", vpc_id = self.vpc.vpc_id)
+#            num += 1
