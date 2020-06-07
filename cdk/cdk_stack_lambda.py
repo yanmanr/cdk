@@ -23,3 +23,13 @@ class LambdaStack(core.Stack):
                 runtime=lambda_.Runtime.PYTHON_3_7,
             )
 
+
+#alternative way to achieve above functionality
+            lambda_function = lambda_.Function(
+                self, f"MyFun-{i}",
+                code=lambda_.Code.asset("scripts"),,
+                handler=f"{i}.main",
+                timeout=core.Duration.seconds(300),
+                runtime=lambda_.Runtime.PYTHON_3_7,
+            )
+
