@@ -54,7 +54,7 @@ class Ec2Stack(core.Stack):
 
         count, num = 8, 0
 
-        az_count = len(azs.availability_zones)
+        az_count = len(azs.availability_zones) #Fetch list/count of azs from Infra(VPC) Stack
 
         instance_securitygroup = ec2.SecurityGroup(self,
                                                 "WeblogicSecurityGroup",
