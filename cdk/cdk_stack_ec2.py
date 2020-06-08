@@ -92,3 +92,4 @@ class Ec2Stack(core.Stack):
             num += 1
 
 #Notes to review: CDK creates instance profile everytime while creating instance rather than re-use. Issue: https://github.com/aws/aws-cdk/issues/8348
+# Above script creates instances one in each azs with 8 instances in total spread across each az. Configuration will differ and vary like in case of configuring web-logic servers, if we need 8 servers as worker nodes but configuration differs, here we can use ansible to run playbooks for configuration.
