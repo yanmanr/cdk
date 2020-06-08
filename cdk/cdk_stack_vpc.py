@@ -9,7 +9,6 @@ class InfraStack(core.Stack):
 
         self.vpc = ec2.Vpc(self, "VPC",
                            cidr="10.10.0.0/16",
-                           # configuration will create 3 groups in 2 AZs = 6 subnets.
                            subnet_configuration=[ec2.SubnetConfiguration(
                                subnet_type=ec2.SubnetType.PUBLIC,
                                name="Public",
