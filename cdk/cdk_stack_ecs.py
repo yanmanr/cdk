@@ -2,6 +2,8 @@ from aws_cdk import core
 import aws_cdk.aws_iam as iam
 import aws_cdk.aws_ec2 as ec2
 import aws_cdk.aws_ecs as ecs
+import aws_cdk.aws_ecr as aws_ecr
+import aws_cdk.aws_codebuild as aws_codebuild
 import aws_cdk.aws_autoscaling as autoscaling
 
 ec2_type = "t2.micro"
@@ -29,6 +31,13 @@ class ECSStack(core.Stack):
                                     iam.PolicyStatement(
                                         effect = iam.Effect.ALLOW,
                                         actions = ['kms:*'],
+                                        resources = [
+                                            '*'
+                                        ]
+                                    ),
+                                    iam.PolicyStatement(
+                                        effect = iam.Effect.ALLOW,
+                                        actions = ['iam:*'],
                                         resources = [
                                             '*'
                                         ]
@@ -65,4 +74,42 @@ class ECSStack(core.Stack):
                                 )
 
 
-        cluster.add_auto_scaling_group(self.ecs_asg),
+        cluster.add_auto_scaling_group(self.ecs_asg)
+        ecs_sample_task_def = ecs.TaskDefinition(self, 
+                                                "ECSTaskDef",
+                                                compatibility= ecs.Compatibility.EC2,
+                                                cpu="2048",
+                                                memory_mib="1024",
+                                                execution_role=task_execution_role,
+                                                family="ecs-sample")
+
+
+        ecr = aws_ecr.Repository(
+            self, "ECR",
+            repository_name="MyFirstCDKRepo",
+            removal_policy=core.RemovalPolicy.DESTROY
+        )
+
+        my_image_docker_ecs = aws_codebuild.PipelineProject(
+            self, "DockerBuild",
+            project_name="MyFirstCDKBuild",
+            build_spec=aws_codebuild.BuildSpec.from_source_filename(
+                filename='./scripts/docker_build_buildspec.yml'),
+            environment=aws_codebuild.BuildEnvironment(
+                privileged=True,
+            ),
+            environment_variables={
+                'ecr': aws_codebuild.BuildEnvironmentVariable(
+                    value=ecr.repository_uri),
+                'tag': aws_codebuild.BuildEnvironmentVariable(
+                    value='cdk')
+            },
+            timeout=core.Duration.minutes(60),
+        )
+
+        ecr.grant_pull_push(my_image_docker_ecs)
+
+        ecs_sample_task_def.add_container("WebContainer",
+                                        image=ecs.ContainerImage.from_ecr_repository(ecr.repository_uri, "cdk"),
+                                        memory_limit_mib=256)
+                    
