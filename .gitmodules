@@ -1,0 +1,4 @@
+[submodule "ecr"]
+	path = ecr
+	url = https://git-codecommit.us-east-1.amazonaws.com/v1/repos/ecr
+	branch = master
